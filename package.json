@@ -1,0 +1,27 @@
+{
+  "name": "tictactoe-hardhat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test",
+    "start": "npx hardhat node",
+    "deploy": "npx hardhat ignition deploy ignition/modules/BookDatabase.ts --network local"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coruja-Dev/tictactoe-hardhat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Coruja-Dev/tictactoe-hardhat/issues"
+  },
+  "homepage": "https://github.com/Coruja-Dev/tictactoe-hardhat#readme",
+  "description": "",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.24.0"
+  }
+}
