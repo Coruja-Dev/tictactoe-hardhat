@@ -5,8 +5,8 @@
   "scripts": {
     "test": "npx hardhat test",
     "start": "npx hardhat node",
-    "deploy": "npx hardhat ignition deploy ignition/modules/BookDatabase.ts --network local"
-
+    "deploy": "npx hardhat ignition deploy ignition/modules/ParOuImpar.ts --network local",
+    "compile": "npx hardhat compile"
   },
   "repository": {
     "type": "git",

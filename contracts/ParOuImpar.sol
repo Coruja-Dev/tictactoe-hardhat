@@ -33,7 +33,7 @@ contract ParOuImpar{
 
     function initGame (uint8 newChoice, uint8 numberP1) public {
         require(newChoice == 1 || newChoice == 2, "Choose 1 or 2");
-        require(numberP1 > 0 && numberP1 <= 10, "Number choice must be between 1 and 10");
+        require(numberP1 >=1 && numberP1 <= 10, "Number choice must be between 1 and 10");
         gameData.choiceP1 = newChoice;
         gameData.numberP1 = numberP1;
     }
@@ -41,7 +41,7 @@ contract ParOuImpar{
     function playGame (uint8 numberP2) public{
 
         require(gameData.choiceP1 != 0, "first choose your option: 1 = par, 2 = impar!");
-        require(numberP2 > 0 && numberP2 <= 10, "Choose a number between 1 and 10");
+        require(numberP2 >=1 && numberP2 <= 10, "Choose a number between 1 and 10");
 
         gameData.numberP2 = numberP2;
 

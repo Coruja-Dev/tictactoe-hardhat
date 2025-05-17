@@ -3,7 +3,7 @@ import {
   loadFixture,
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
-import { expect } from "chai";
+import { assert, expect, should } from "chai";
 import hre from "hardhat";
 
 type GameData = {
@@ -48,13 +48,12 @@ describe("ParOuImpar", function () {
   
   it("Should not Init (Wrong Choice)", async function () {
     const { parOuImpar, player1, player2 } = await loadFixture(deployFixture);
-    //const gameData = fetchGameData(await parOuImpar.gameData());
     await expect(parOuImpar.initGame(3, 1)).to.be.revertedWith("Choose 1 or 2");
   });
 
   it("Should not Init (Wrong Number)", async function () {
     const { parOuImpar, player1, player2 } = await loadFixture(deployFixture);
-    //const gameData = fetchGameData(await parOuImpar.gameData());
+    
     await expect(parOuImpar.initGame(1, 0)).to.be.revertedWith("Number choice must be between 1 and 10");
   });
 
@@ -67,7 +66,6 @@ describe("ParOuImpar", function () {
 
     expect(gameData.choiceP1).to.not.equal(0);
        
-    //await expect(parOuImpar.initGame(1, 0)).to.be.revertedWith("Number choice must be between 1 and 10");
   });
 
 
@@ -80,17 +78,12 @@ describe("ParOuImpar", function () {
 
     expect(gameData.choiceP1).to.not.equal(0);
        
-    //await expect(parOuImpar.initGame(1, 0)).to.be.revertedWith("Number choice must be between 1 and 10");
   });
 
   it("Should not Play Game (Wrong Number)", async function () {
     const { parOuImpar, player1, player2 } = await loadFixture(deployFixture);
 
     await parOuImpar.initGame(2, 5);
-
-    //const gameData = fetchGameData(await parOuImpar.gameData());
-
-    //expect(gameData.choiceP1).to.not.equal(0);
        
     await expect(parOuImpar.playGame(11)).to.be.revertedWith("Choose a number between 1 and 10");
   });
@@ -106,10 +99,75 @@ describe("ParOuImpar", function () {
 
     expect(lastGameData.lastWinner).to.equal(2);
        
-    //await expect(parOuImpar.playGame(11)).to.be.revertedWith("Choose a number between 1 and 10");
   });
 
+  it("Should throw JS error on negative number before tx is sent", async function () {
+    const { parOuImpar, player1 } = await loadFixture(deployFixture);
 
+    try {
+      await parOuImpar.connect(player1).initGame(1, -5);
+      expect.fail("Expected JS-side encoding error but none was thrown");
+    } catch (error: any) {
+      expect(error.message).to.match(/value out-of-bounds/);
+    }
+  });
 
+  it("Should throw JS error on negative number before tx is sent (player 2)", async function () {
+    const { parOuImpar, player1 } = await loadFixture(deployFixture);
+
+    try {
+      await parOuImpar.connect(player1).initGame(1, 5);
+      await parOuImpar.playGame(-6);
+      expect.fail("Expected JS-side encoding error but none was thrown");
+    } catch (error: any) {
+      expect(error.message).to.match(/value out-of-bounds/);
+    }
+  });
+
+  it("Should throw JS error on infinite positive number before tx is sent", async function () {
+  const { parOuImpar, player1 } = await loadFixture(deployFixture);
+
+    try {
+      await parOuImpar.connect(player1).initGame(1, Number.POSITIVE_INFINITY);
+      expect.fail("Expected JS-side encoding error but none was thrown");
+    } catch (error: any) {
+      expect(error.message).to.match(/underflow/);
+    }
+  });
+
+  it("Should throw JS error on infinite negative number before tx is sent", async function () {
+  const { parOuImpar, player1 } = await loadFixture(deployFixture);
+
+    try {
+      await parOuImpar.connect(player1).initGame(1, Number.NEGATIVE_INFINITY);
+      expect.fail("Expected JS-side encoding error but none was thrown");
+    } catch (error: any) {
+      expect(error.message).to.match(/underflow/);
+    }
+  });
+
+  it("Should throw JS error on infinite positive number before tx is sent (player 2)", async function () {
+  const { parOuImpar, player1 } = await loadFixture(deployFixture);
+
+    try {
+      await parOuImpar.connect(player1).initGame(1, 5);
+      await parOuImpar.playGame(Number.POSITIVE_INFINITY);
+      expect.fail("Expected JS-side encoding error but none was thrown");
+    } catch (error: any) {
+      expect(error.message).to.match(/underflow/);
+    }
+  });
+
+  it("Should throw JS error on infinite negative number before tx is sent (player 2)", async function () {
+  const { parOuImpar, player1 } = await loadFixture(deployFixture);
+
+    try {
+      await parOuImpar.connect(player1).initGame(1, 5);
+      await parOuImpar.playGame(Number.NEGATIVE_INFINITY);
+      expect.fail("Expected JS-side encoding error but none was thrown");
+    } catch (error: any) {
+      expect(error.message).to.match(/underflow/);
+    }
+  });
 
 });
